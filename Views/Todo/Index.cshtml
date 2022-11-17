@@ -1,0 +1,54 @@
+﻿@model ListTodoViewModel
+
+<div class="row">
+    <div class="col text-center">
+        <h1>@ViewData["Title"]</h1>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col">
+        <table class="table">
+            <thead>
+            <tr>
+                <th scope="col">#</th>
+                <th scope="col">Titulo</th>
+                <th scope="col">Data</th>
+                <th scope="col">Completo</th>
+                <th scope="col">Ações</th>
+            </tr>
+            </thead>
+            <tbody>
+            @foreach (var todo in Model.Todos)
+            {
+                <tr>
+                    <th scope="row">@todo.Id</th>
+                    <td>@todo.Title</td>
+                    <td>@todo.Date.ToString("dd/MM/yyyy")</td>
+                    <td>
+                        @if (todo.IsCompleted)
+                        {
+                            <i class="text-success" data-feather="check-square"></i>
+                        }
+                        else
+                        {
+                            <i class="text-danger" data-feather="x-square"></i>
+                        }
+                    </td>
+                    <td>
+                        <div class="btn-group" role="group" aria-label="Basic mixed styles example">
+                            <a class="btn btn-success @(todo.IsCompleted ? "disabled" : "")" asp-controller="Todo" asp-action="ToComplete" asp-route-id="@todo.Id">Concluido</a>
+                            <a class="btn btn-warning @(todo.IsCompleted ? "disabled" : "")" asp-controller="Todo" asp-action="Edit" asp-route-id="@todo.Id">Editar</a>
+                            <a class="btn btn-danger" asp-controller="Todo" asp-action="Delete" asp-route-id="@todo.Id">Excluir</a>
+                        </div>
+                    </td>
+                </tr>
+            }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<div class="d-grid gap-2 col mx-auto mt-3">
+    <a asp-controller="Todo" asp-action="Edit" class="btn btn-primary">Nova</a>
+</div>

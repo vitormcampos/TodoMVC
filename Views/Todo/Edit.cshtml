@@ -1,0 +1,21 @@
+﻿@model CreateTodoViewModel
+
+<div class="row">
+    <div class="col text-center">
+        <h1>@ViewData["Title"]</h1>
+    </div>
+</div>
+
+<form method="post">
+    <div class="row g-3">
+        <div class="col">
+            <input asp-for="Title" type="text" class="form-control" placeholder="Titulo">
+        </div>
+        <div class="col">
+            <input asp-for="Date" type="date" class="form-control">
+        </div>
+    </div>
+    <div class="d-grid gap-2 col mx-auto mt-3">
+      <button type="submit" class="btn btn-success">Enviar</button>
+    </div>
+</form>

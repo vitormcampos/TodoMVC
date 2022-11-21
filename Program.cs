@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using TarefasMvc.Context;
+using TarefasMvc.Repositories;
 using TarefasMvc.Services;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -12,6 +13,7 @@ builder.Services.AddDbContext<AppDbContext>(opt =>
     opt.UseSqlServer(connectionString);
 });
 builder.Services.AddScoped<TodoService>();
+builder.Services.AddScoped<TodoRepository>();
 
 var app = builder.Build();
 

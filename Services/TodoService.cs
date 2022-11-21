@@ -1,22 +1,23 @@
 ﻿using TarefasMvc.Context;
 using TarefasMvc.Exceptions;
 using TarefasMvc.Models;
+using TarefasMvc.Repositories;
 using TarefasMvc.ViewModels;
 
 namespace TarefasMvc.Services;
 
 public class TodoService
 {
-    private AppDbContext _context;
+    private TodoRepository _repository;
 
-    public TodoService(AppDbContext context)
+    public TodoService(TodoRepository repository)
     {
-        _context = context;
+        _repository = repository;
     }
 
     public CreateTodoViewModel FindById(int id)
     {
-        var todo = _context.Todos.Find(id);
+        var todo = _repository.FindById(id);
         if (todo is null)
         {
             throw new TodoNotFoundException();
@@ -29,7 +30,7 @@ public class TodoService
     
     public ListTodoViewModel ListAll()
     {
-        var todos = _context.Todos.OrderBy(t => t.Date).ToList();
+        var todos = _repository.FindAll();
 
         var viewModel = new ListTodoViewModel() { Todos = todos };
 
@@ -39,38 +40,30 @@ public class TodoService
     public void Create(CreateTodoViewModel data)
     {
         var todo = new Todo(data.Date, data.Title);
-        _context.Todos.Add(todo);
-        _context.SaveChanges();
+        _repository.Create(todo);
     }
 
     public void Update(int id, CreateTodoViewModel data)
     {
-        var todo = _context.Todos.Find(id);
-        if (todo is null) throw new TodoNotFoundException();
+        if (id != data.Id) throw new TodoNotMatchException();
 
-        todo.Title = data.Title;
-        todo.Date = data.Date;
-        _context.Update(todo);
-        _context.SaveChanges();
+        var todo = new Todo(data.Id, data.Date, data.Title, data.IsCompleted);
+        
+        _repository.Update(todo);
     }
 
     public void Delete(int id)
     {
-        var todo = _context.Todos.Find(id);
-        if (todo is null) throw new TodoNotFoundException();
-
-        _context.Todos.Remove(todo);
-        _context.SaveChanges();
+        _repository.Delete(id);
     }
 
     public void ToComplete(int id)
     {
-        var todo = _context.Todos.Find(id);
+        var todo = _repository.FindById(id);
         if (todo is null) throw new TodoNotFoundException();
 
         todo.IsCompleted = true;
 
-        _context.Todos.Update(todo);
-        _context.SaveChanges();
+        _repository.Update(todo);
     }
 }
